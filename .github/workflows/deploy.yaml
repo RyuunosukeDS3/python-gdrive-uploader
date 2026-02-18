@@ -4,6 +4,7 @@ on:
   release:
     types: [published]
 
+jobs:
   docker_build_and_push:
     name: Package
     runs-on: ubuntu-latest
