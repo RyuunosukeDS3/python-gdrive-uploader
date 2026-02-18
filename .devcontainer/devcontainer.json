@@ -1,0 +1,66 @@
+{
+  "name": "Python Gdrive Uploader",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers-extra/features/lefthook-asdf:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "pnpmVersion": "none",
+      "nvmVersion": "latest"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers-extra/features/nestjs-cli:2": {},
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+      "plugins": "git zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting",
+      "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-syntax-highlighting https://github.com/zdharma-continuum/fast-syntax-highlighting"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+
+  "initializeCommand": "rm -f /etc/apt/sources.list.d/yarn.list && echo '{ \"path\": \"cz-conventional-commit-gitmoji\" }' > ~/.czrc",
+
+  "postCreateCommand": "npm install -g git+ssh://git@github.com/ryuunosukeds3/git-standards.git && npm install -g commitizen@4 cz-conventional-commit-gitmoji @commitlint/cli@19 @commitlint/config-conventional commitlint-config-gitmoji conventional-changelog-gitmoji-config && lefthook install && pip install -r requirements-dev.txt black",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "material-icon-theme.activeIconPack": "nest",
+        "cSpell.enabled": true,
+        "python.formatting.provider": "black",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.python",
+          "editor.formatOnSave": true
+        },
+        "sonarlint.connectedMode.connections.sonarcloud": [
+          {
+            "organizationKey": "ryuunosukeds3"
+          }
+        ]
+      },
+
+      "extensions": [
+        "eamodio.gitlens",
+        "SonarSource.sonarlint-vscode",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "hbenl.vscode-mocha-test-adapter",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  },
+
+  "mounts": [
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.czrc",
+      "target": "/home/node/.czrc",
+      "type": "bind"
+    }
+  ]
+}

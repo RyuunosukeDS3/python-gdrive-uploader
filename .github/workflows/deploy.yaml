@@ -1,0 +1,39 @@
+name: Release and Build
+
+on:
+  release:
+    types: [published]
+
+  docker_build_and_push:
+    name: Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up QEMU (for cross-building)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push image
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}"
+
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --build-arg APP_NAME=${{ github.event.repository.name }} \
+            -t ${IMAGE_NAME}:latest \
+            -t ${IMAGE_NAME}:${TAG_NAME} \
+            --push .
+
+
+
