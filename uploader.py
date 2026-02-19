@@ -45,6 +45,8 @@ def zip_folder():
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     zip_filename = f"{BACKUP_NAME}_{timestamp}.zip"
 
+    print(f"Creating zip archive ${zip_filename}")
+
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, dirs, files in os.walk(SOURCE_FOLDER):
             for file in files:
@@ -55,12 +57,15 @@ def zip_folder():
     return zip_filename, timestamp
 
 def upload_file(service, filename):
+
     file_metadata = {
         'name': filename,
         'parents': [GDRIVE_FOLDER_ID]
     }
 
     media = MediaFileUpload(filename, resumable=True)
+
+    print(f"Uploading zip archive: {filename}")
 
     service.files().create(
         body=file_metadata,
